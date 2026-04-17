@@ -1,6 +1,6 @@
 'use client'
 
-import { useSpring, animated } from '@react-spring/web'
+import { motion } from 'framer-motion'
 import { Truck } from 'lucide-react'
 import { formatDT } from '@/lib/utils/formatDT'
 import styles from './ShippingProgress.module.css'
@@ -8,11 +8,7 @@ import styles from './ShippingProgress.module.css'
 export default function ShippingProgress({ cartTotal, threshold, shippingPrice }) {
   const pct = Math.min((cartTotal / threshold) * 100, 100)
   const remaining = Math.max(threshold - cartTotal, 0)
-
-  const { progress } = useSpring({
-    progress: pct,
-    config: { tension: 120, friction: 14 },
-  })
+  const spring = { type: 'spring', stiffness: 120, damping: 14 }
 
   return (
     <div className={styles.wrap}>
@@ -28,14 +24,15 @@ export default function ShippingProgress({ cartTotal, threshold, shippingPrice }
       </div>
 
       <div className={styles.track}>
-        <animated.div
+        <motion.div
           className={styles.fill}
-          style={{ width: progress.to((p) => `${p}%`) }}
+          animate={{ width: `${pct}%` }}
+          transition={spring}
         />
-        {/* Slime drip effect */}
-        <animated.div
+        <motion.div
           className={styles.drip}
-          style={{ left: progress.to((p) => `calc(${p}% - 8px)`) }}
+          animate={{ left: `calc(${pct}% - 8px)` }}
+          transition={spring}
         />
       </div>
     </div>
